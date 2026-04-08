@@ -23,9 +23,10 @@ public class BorrowDAO {
      * @param studentId : 학번이 아니라 student 테이블에 PK 값 이다. int 형
      * @throws SQLException
      */
-    public void borrowBook(int bookId, int studentId) throws SQLException {
+    public int borrowBook(int bookId, int studentId) throws SQLException {
         Connection conn = null;
 
+        int rows = 0;
         try {
             conn = DatabaseUtil.getConnection();
             conn.setAutoCommit(false); // 트랜잭션 시작 ......
@@ -69,12 +70,12 @@ public class BorrowDAO {
 
             try (PreparedStatement updatePstmt = conn.prepareStatement(updateSql)) {
                 updatePstmt.setInt(1, bookId);
-                updatePstmt.executeUpdate();
+                rows = updatePstmt.executeUpdate();
             } // end of updatePstmt
 
             // 1, 2, 3  모두 성공 -> 커밋
             conn.commit();
-
+            return rows;
         } catch (SQLException e) {
             if (conn != null) {
                 conn.rollback(); // 하나라도 실패하면 전체 롤백
@@ -88,6 +89,7 @@ public class BorrowDAO {
                 conn.close();
             }
         }
+        return rows;
     }
 
 

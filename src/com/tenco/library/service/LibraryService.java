@@ -5,6 +5,7 @@ import com.tenco.library.dao.BookDAO;
 import com.tenco.library.dao.BorrowDAO;
 import com.tenco.library.dao.StudentDAO;
 import com.tenco.library.dto.Book;
+import com.tenco.library.dto.Borrow;
 import com.tenco.library.dto.Student;
 
 import java.sql.SQLException;
@@ -86,11 +87,12 @@ public class LibraryService {
      * @param studentId (학번이 아니라 PK값)
      * @throws SQLException
      */
-    public void borrowBook(int bookId, int studentId) throws SQLException {
+    public int borrowBook(int bookId, int studentId) throws SQLException {
         if (bookId <= 0 || studentId <= 0) {
             throw new SQLException("유효한 도서ID와 학생ID를 입력해주세요");
         }
-        borrowDAO.borrowBook(bookId, studentId);
+       int rows = borrowDAO.borrowBook(bookId, studentId);
+        return rows;
     }
 
     // 도서 반납 처리
@@ -106,6 +108,12 @@ public class LibraryService {
             throw new SQLException("유효한 도서ID와 학생ID를 입력해주세요 ");
         }
         borrowDAO.returnBook(bookId, studentId);
+    }
+
+    // 현재 대출중인 도서 조회 기능
+    public List<Borrow> searchBroowBookList() throws SQLException {
+       return borrowDAO.getBorrowedBooks();
+
     }
 
     // TODO 관리자 기능 추가 예정
